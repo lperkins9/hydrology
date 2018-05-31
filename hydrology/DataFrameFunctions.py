@@ -53,7 +53,7 @@ def overlay_hydrology(delineationdf, imperviousdf, soils):
     Drainage_Areas.to_file('hydrology/output/Drainage_Areas.shp')
     Drainage_Areas_CSV = Drainage_Areas.drop('geometry',axis=1)
     Drainage_Areas_CSV.to_csv('hydrology/output/Drainage_Areas.csv')
-    return Drainage_Areas_CSV.round(decimals=0)
+    return Drainage_Areas_CSV.round(decimals=2)
 
 
 def create_overall_map(delineationdf, imperviousdf):
@@ -77,7 +77,7 @@ def create_overall_map(delineationdf, imperviousdf):
     
     x = point[0][0]
     y = point[1][0]
-    mp = folium.Map(location=[x,y], zoom_start=30)
+    mp = folium.Map(location=[x,y], zoom_start=17)
     folium.GeoJson(delineationdf, style_function = lambda x :{'fillColor': 'green','opacity':100}).add_to(mp)
     folium.GeoJson(imperviousdf, style_function = lambda x :{'fillColor': 'black','opacity':100}).add_to(mp)
     mp.save('templates/map.html')
