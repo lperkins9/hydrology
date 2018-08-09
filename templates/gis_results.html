@@ -3,13 +3,39 @@
 {% block content %}
     <div class = "container-fluid">
         <div class = "row">
-            <div class = "col-4">
+            <div class = "col-8">
                 <div class = "row">
-                    <h2>Hydrology Calculation Table</h2>
+                    <h2>Drainage Area Delineation Map</h2>
                 </div>
                 <div class = "row">
-                    {{ table|safe }}
+                    {% include "map.html" %}
                 </div>
+            </div>
+        <div>
+
+        <div class = "row">
+            <div class = "col">
+                <div class = "row">
+                    <h2>Hydrology Calculation Summary Table</h2>
+                </div>
+                <div class = "row">
+                    {{ table4|safe}}
+                </div>
+
+                <div class = "row">
+                    <h2>Inlet Calculation Table</h2>
+                </div>
+                <div class = "row">
+                    {{ table2|safe}}
+                </div>
+                <div class = "row">
+                    <h2>Basin Calculation Table</h2>
+                </div>
+                <div class = "row">
+                    {{ table3|safe}}
+                </div>
+
+
                 <div class = "row">
                     <div class = "py-4 mx-4">
                         <a class="btn btn-primary btn-lg" href= "{% url 'download_csv' %}" role="button">Download CSV</a>

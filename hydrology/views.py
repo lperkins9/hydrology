@@ -26,7 +26,7 @@ def gis_upload(request):
             table = overlay_hydrology(delineationdf, imperviousdf, soils)
             overall_map = create_overall_map(delineationdf, imperviousdf)
             
-            return render(request, 'gis_results.html', {'table': table.to_html()})
+            return render(request, 'gis_results.html', {'table': table[0].to_html(), 'table2': table[1].to_html(), 'table3': table[2].to_html(), 'table4': table[3].to_html()})
         
     else:
         form = UploadFileForm()

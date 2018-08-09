@@ -10,13 +10,13 @@ import time
 from numpy import median
 
 def overlay_hydrology(delineationdf, imperviousdf, soils):
-    imperviousdf.columns = ['SURFACE_TY','COVERAGE_T','geometry']
+    imperviousdf.columns = ['COVERAGE_T','SURFACE_TY','geometry']
 
     union = overlay(delineationdf,imperviousdf,how='union')
     union.fillna(value=nan, inplace=True)
     union['COVERAGE_T'] = union['COVERAGE_T'].replace([nan],['LAWN'])
     union['SURFACE_TY'] = union['SURFACE_TY'].replace([nan],['PERVIOUS'])
-    union['BASIN'] = union['BASIN'].replace([nan],['NOT CAPTURED'])
+    union['BASIN'] = union['BASIN'].replace([nan],['BYPASS'])
     union['AREA_SF'] = union['geometry'].area
 
     table = pd.pivot_table(union, values='AREA_SF', index = ['OUTLET_STR'], columns = ['COVERAGE_T'], aggfunc=np.sum)
@@ -53,7 +53,34 @@ def overlay_hydrology(delineationdf, imperviousdf, soils):
     Drainage_Areas.to_file('hydrology/output/Drainage_Areas.shp')
     Drainage_Areas_CSV = Drainage_Areas.drop('geometry',axis=1)
     Drainage_Areas_CSV.to_csv('hydrology/output/Drainage_Areas.csv')
-    return Drainage_Areas_CSV.round(decimals=2)
+    table = Drainage_Areas_CSV.round(2)
+
+    def get_curve(row):
+        cn_table_list = cn_table.index.tolist()
+        row_list = row.index.tolist()
+        cn = 0
+        cn = (row['IMPERVIOUS']*98+row['PERVIOUS']*cn_table[soils]['LAWN'])/row['SUM']
+        return cn
+
+    table2 = pd.pivot_table(union, values='AREA_SF', index = ['OUTLET_STR'], columns = ['SURFACE_TY'], aggfunc=np.sum)
+    table2['SUM'] = table2.sum(axis=1)
+    table2['CN'] = table2.apply(lambda row: get_curve(row), axis=1)
+    table2.fillna(value=0,inplace=True)
+    table2=table2.round(2)
+
+    table3 = pd.pivot_table(union, values='AREA_SF', index = ['BASIN'], columns = ['SURFACE_TY'], aggfunc=np.sum)
+    table3['SUM'] = table3.sum(axis=1)
+    table3['CN'] = table3.apply(lambda row: get_curve(row), axis=1)    
+    table3.fillna(value=0,inplace=True)
+    table3=table3.round(2)
+
+    table4 = pd.pivot_table(union, values='AREA_SF', index = ['BASIN','OUTLET_STR'], columns = ['SURFACE_TY','COVERAGE_T'], aggfunc=np.sum)
+    table4['SUM'] = table4.sum(axis=1)  
+    table4.fillna(value=0,inplace=True)
+    table4=table4.round(2)
+
+
+    return [table,table2,table3,table4]
 
 
 def create_overall_map(delineationdf, imperviousdf):
