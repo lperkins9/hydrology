@@ -40,7 +40,7 @@ Shapely==1.6.4.post1
 six==1.11.0
 SQLAlchemy==1.2.7
 tornado==5.0.2
-urllib3==1.22
+urllib3==1.26.5
 virtualenv==15.2.0
 wincertstore==0.2
 whitenoise==3.3.1
