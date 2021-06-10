@@ -6,7 +6,7 @@ click-plugins==1.0.3
 cligj==0.4.0
 cycler==0.10.0
 descartes==1.1.0
-Django==2.0.5
+Django==2.2.24
 django-bootstrap4==0.0.6
 django-forms-bootstrap==3.1.0
 Fiona==1.7.10
